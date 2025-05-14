@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faszination Fußball: Rekorde, Ligen und besondere Momente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-image: url('https://wallpapers.com/images/featured/4k-fussball-uxsfdgdbs3eqdk2h.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, p {
+            background-color: rgba(200, 200, 200, 0.6); 
+            padding: 8px; 
+            border-radius: 5px; 
+            display: inline-block; 
+            font-size: 14px; 
+            line-height: 1.5; 
+        }
+
+        .category, .sub-category {
+            text-align: center;
+            margin-top: 20px;
+            display: none; 
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .back-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function showCategory(category) {
+            var categories = document.getElementsByClassName('category');
+            for (var i = 0; i < categories.length; i++) {
+                categories[i].style.display = 'none';
+            }
+            document.getElementById(category).style.display = 'block';
+        }
+
+        function showSubCategory(subCategory) {
+            var subCategories = document.getElementsByClassName('sub-category');
+            for (var i = 0; i < subCategories.length; i++) {
+                subCategories[i].style.display = 'none';
+            }
+            document.getElementById(subCategory).style.display = 'block';
+        }
+
+        function goBack() {
+            var categories = document.getElementsByClassName('category');
+            for (var i = 0; i < categories.length; i++) {
+                categories[i].style.display = 'none';
+            }
+            document.getElementById('start').style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+    <div id="start" style="text-align: center; margin-top: 20px;">
+        <h1 style="font-size: 30px;">Faszination Fußball: Rekorde, Ligen und besondere Momente</h1>
+        <div class="buttons">
+            <button onclick="showCategory('ligen')">Ligen</button>
+            <button onclick="showCategory('rekorde')">Rekorde</button>
+            <button onclick="showCategory('spezielles')">Spezielles</button>
+            <button onclick="showQuiz()">Quiz</button>
+        </div>
+    </div>
+    <div id="quiz" class="category" style="display: none; text-align: center;">
+        <h2 style="font-size: 32px; font-weight: bold;">Quiz: Teste dein Wissen!</h2>
+        <p id="question" style="font-size: 24px; font-weight: bold; margin-top: 20px;">Frage wird hier angezeigt...</p>
+        <div class="buttons">
+            <button onclick="checkAnswer(0)">Antwort 1</button>
+            <button onclick="checkAnswer(1)">Antwort 2</button>
+            <button onclick="checkAnswer(2)">Antwort 3</button>
+            <button onclick="checkAnswer(3)">Antwort 4</button>
+        </div>
+        <p id="feedback" style="margin-top: 20px; font-size: 20px; font-weight: bold;"></p>
+        <div id="result" style="display: none; margin-top: 20px;">
+            <h3>Auswertung</h3>
+            <p id="score"></p>
+            <button onclick="restartQuiz()">Noch einmal</button>
+        </div>
+        <div class="back-button">
+            <button onclick="goBack()">Zurück</button>
+        </div>
+    </div>
+    
+    <script>
+        // 100 verschiedene Fragen
+const allQuestions = [
+    { question: "Welcher Verein hat die meisten Titel in der Premier League gewonnen?", answers: ["Chelsea", "Manchester United", "Liverpool", "Arsenal"], correct: 1 },
+    { question: "Wer hält den Rekord für die meisten Tore in der La Liga?", answers: ["Cristiano Ronaldo", "Lionel Messi", "Raúl", "Karim Benzema"], correct: 1 },
+    { question: "Welcher Spieler erzielte 5 Tore in 9 Minuten in der Bundesliga?", answers: ["Robert Lewandowski", "Gerd Müller", "Thomas Müller", "Marco Reus"], correct: 0 },
+    { question: "Welcher Verein gewann die Champions League am häufigsten?", answers: ["FC Barcelona", "AC Mailand", "Real Madrid", "Bayern München"], correct: 2 },
+    { question: "Welcher Spieler hält den Rekord für die meisten Vorlagen in der Premier League?", answers: ["Frank Lampard", "Ryan Giggs", "David Beckham", "Steven Gerrard"], correct: 1 },
+    { question: "Welcher Spieler hält den Rekord für die meisten Tore in einer Bundesliga-Saison?", answers: ["Gerd Müller", "Robert Lewandowski", "Pierre-Emerick Aubameyang", "Lothar Matthäus"], correct: 1 },
+    { question: "Welcher Verein hat die meisten Titel in der Bundesliga gewonnen?", answers: ["Borussia Dortmund", "Hamburger SV", "FC Bayern München", "Werder Bremen"], correct: 2 },
+    { question: "Welcher Spieler hat die meisten Champions-League-Tore erzielt?", answers: ["Lionel Messi", "Cristiano Ronaldo", "Raúl", "Karim Benzema"], correct: 1 },
+    { question: "Welcher Verein hat die meisten Titel in der Serie A gewonnen?", answers: ["Inter Mailand", "AC Mailand", "Juventus Turin", "AS Rom"], correct: 2 },
+    { question: "Welcher Spieler hat die meisten Tore in einer La-Liga-Saison erzielt?", answers: ["Cristiano Ronaldo", "Lionel Messi", "Luis Suárez", "Karim Benzema"], correct: 1 },
+    { question: "Welcher Spieler hat Tore bei fünf verschiedenen Weltmeisterschaften erzielt?", answers: ["Cristiano Ronaldo", "Lionel Messi", "Miroslav Klose", "Pelé"], correct: 0 },
+    { question: "Welcher Klub erzielte ein 8:2 gegen Barcelona in der Champions League?", answers: ["Real Madrid", "Bayern München", "Liverpool", "PSG"], correct: 1 },
+    { question: "Welcher Spieler war der jüngste Torschütze Barcelonas (2005)?", answers: ["Ronaldinho", "Lionel Messi", "Ansu Fati", "Xavi"], correct: 1 },
+    { question: "Was ist das Besondere an Rogerio Cenis Karriere?", answers: ["Über 130 Tore als Torwart", "Meiste Champions-League-Titel", "Meiste Länderspiele", "Meiste Eigentore"], correct: 0 },
+    { question: "Wer wurde als erster Spieler vom Platz gestellt, ohne den Ball zu berühren?", answers: ["Lee Todd", "Sergio Ramos", "Pepe", "Roy Keane"], correct: 0 },
+    { question: "Wer hat die meisten Roten Karten in La Liga?", answers: ["Sergio Ramos", "Pepe", "Gerard Piqué", "Diego Costa"], correct: 0 },
+    { question: "Welcher Freistoßspezialist war auch für seine Einwürfe bekannt?", answers: ["David Beckham", "Rory Delap", "Juninho", "Andrea Pirlo"], correct: 1 },
+    { question: "Wer ist laut FIFA der erfolgreichste Torjäger der WM-Geschichte?", answers: ["Miroslav Klose", "Pelé", "Ronaldo", "Just Fontaine"], correct: 0 },
+    { question: "Welcher Spieler wurde von gegnerischen Fans im Bernabéu bejubelt?", answers: ["Ronaldinho", "Lionel Messi", "Cristiano Ronaldo", "Zinédine Zidane"], correct: 0 },
+    { question: "Wer war die Vorlage beim ersten Messi-Tor?", answers: ["Ronaldinho", "Xavi", "Iniesta", "Eto'o"], correct: 0 },
+    { question: "Wie hoch war der schnellste Platzverweis im Profifußball?", answers: ["2 Sekunden", "5 Sekunden", "10 Sekunden", "15 Sekunden"], correct: 0 },
+    { question: "Welcher Spieler hat sowohl WM als auch Copa America gewonnen (2021, 2022)?", answers: ["Lionel Messi", "Neymar", "Maradona", "Pelé"], correct: 0 },
+    { question: "Welche zwei Spieler dominieren die Ballon d’Or-Geschichte?", answers: ["Messi & Ronaldo", "Pelé & Maradona", "Zidane & Ronaldo", "Cruyff & Beckenbauer"], correct: 0 },
+    { question: "Welcher Bayern-Spieler traf 5× in 9 Minuten?", answers: ["Lewandowski", "Thomas Müller", "Gerd Müller", "Klose"], correct: 0 },
+    { question: "Welcher Spieler hält den Weltrekord für meisten Eigentore in einem Turnier?", answers: ["Kein Einzelner – EM 2020", "Sergio Ramos", "Pepe", "Gerard Piqué"], correct: 0 },
+    { question: "Wer war jüngster Spieler bei einer WM?", answers: ["Norman Whiteside", "Pelé", "Lionel Messi", "Kylian Mbappé"], correct: 0 },
+    { question: "Welcher Spieler erzielte ein Tor mit einem 90-Meter-Abschlag?", answers: ["Tim Howard", "Manuel Neuer", "Alisson Becker", "Ederson"], correct: 0 },
+    { question: "Welcher Ex-Spieler war Präsident von Liberia?", answers: ["George Weah", "Didier Drogba", "Samuel Eto'o", "Yaya Touré"], correct: 0 },
+    { question: "Welcher Spieler war 2022 der beste WM-Spieler (Goldener Ball)?", answers: ["Lionel Messi", "Kylian Mbappé", "Luka Modrić", "Cristiano Ronaldo"], correct: 0 },
+    { question: "Welcher Spieler hielt am längsten ohne Gegentor bei einer WM?", answers: ["Walter Zenga", "Manuel Neuer", "Gianluigi Buffon", "Iker Casillas"], correct: 0 },
+    { question: "Wer trug bei der EM 2021 die Regenbogen-Kapitänsbinde?", answers: ["Manuel Neuer", "Cristiano Ronaldo", "Harry Kane", "Giorgio Chiellini"], correct: 0 },
+    { question: "Welcher Spieler hat die meisten Champions-League-Titel?", answers: ["Paco Gento", "Cristiano Ronaldo", "Lionel Messi", "Zinédine Zidane"], correct: 0 },
+    { question: "Welcher deutsche Stürmer wurde 2014 WM-Torschützenkönig?", answers: ["Kein Deutscher – James Rodríguez", "Miroslav Klose", "Thomas Müller", "Mario Götze"], correct: 0 },
+    { question: "Wer hat den härtesten Schussrekord in km/h?", answers: ["Ronny Heberson", "Roberto Carlos", "Cristiano Ronaldo", "Zlatan Ibrahimović"], correct: 0 },
+    { question: "Wer war der älteste WM-Torschütze?", answers: ["Roger Milla", "Cristiano Ronaldo", "Lionel Messi", "Pelé"], correct: 0 },
+    { question: "Wer war der jüngste WM-Torschütze?", answers: ["Pelé", "Kylian Mbappé", "Norman Whiteside", "Lionel Messi"], correct: 0 },
+    { question: "Wie viele Ballon d’Ors hat Messi gewonnen (Stand 2023)?", answers: ["Acht", "Sieben", "Sechs", "Neun"], correct: 0 },
+    { question: "Welcher Trainer machte „Gegenpressing“ berühmt?", answers: ["Jürgen Klopp", "Pep Guardiola", "José Mourinho", "Carlo Ancelotti"], correct: 0 },
+    { question: "Was bedeutet „Tiki-Taka“?", answers: ["Kurzpass- und Ballbesitzspiel", "Defensivspiel", "Konterspiel", "Langpassspiel"], correct: 0 },
+    { question: "Welcher Spieler hat einen Lupfer-Elfmeter erfunden?", answers: ["Antonín Panenka", "Lionel Messi", "Cristiano Ronaldo", "Ronaldinho"], correct: 0 },
+    { question: "Welcher Spieler ist mit über 1.100 Profi-Toren der offiziell erfolgreichste Torschütze aller Zeiten?", answers: ["Josef Bican", "Pelé", "Lionel Messi", "Cristiano Ronaldo"], correct: 0 },
+    { question: "Wer ist der jüngste Spieler, der je in einem WM-Finale stand?", answers: ["Pelé", "Kylian Mbappé", "Lionel Messi", "Cristiano Ronaldo"], correct: 0 },
+    { question: "Wer war der älteste eingesetzte Spieler bei einer Weltmeisterschaft?", answers: ["Essam El-Hadary", "Roger Milla", "Gianluigi Buffon", "Iker Casillas"], correct: 0 },
+    { question: "Welcher Torwart hat die meisten Länderspiele absolviert?", answers: ["Gianluigi Buffon", "Manuel Neuer", "Iker Casillas", "Peter Schmeichel"], correct: 0 },
+    { question: "Welcher Spieler erzielte das „Tor des Jahrhunderts“ 1986 gegen England?", answers: ["Diego Maradona", "Lionel Messi", "Cristiano Ronaldo", "Pelé"], correct: 0 },
+    { question: "Welcher Spieler hat die meisten Champions-League-Einsätze?", answers: ["Cristiano Ronaldo", "Lionel Messi", "Iker Casillas", "Xavi"], correct: 0 },
+    { question: "Wer ist der einzige Spieler, der mit zwei verschiedenen Ländern Weltmeister wurde (Spieler & Trainer)?", answers: ["Mario Zagallo", "Pelé", "Franz Beckenbauer", "Didier Deschamps"], correct: 0 },
+    { question: "Welcher Spieler wurde 2001 für eine Weltrekordablöse von Juventus zu Real Madrid transferiert?", answers: ["Zinédine Zidane", "Luis Figo", "Cristiano Ronaldo", "David Beckham"], correct: 0 },
+    { question: "Wer wurde 2005 als erster Afrikaner Weltfußballer des Jahres?", answers: ["George Weah", "Didier Drogba", "Samuel Eto'o", "Yaya Touré"], correct: 0 },
+    { question: "Welcher Spieler war Kapitän bei Deutschlands WM-Triumph 2014?", answers: ["Philipp Lahm", "Bastian Schweinsteiger", "Manuel Neuer", "Mats Hummels"], correct: 0 },
+    { question: "Wer erzielte das Siegtor im WM-Finale 2014?", answers: ["Mario Götze", "Thomas Müller", "André Schürrle", "Miroslav Klose"], correct: 0 },
+    { question: "Welcher Spieler wurde dreimal in Folge Europas Fußballer des Jahres (Ballon d'Or)?", answers: ["Michel Platini", "Lionel Messi", "Cristiano Ronaldo", "Johan Cruyff"], correct: 0 },
+    { question: "Wer hält den Rekord für die meisten Assists in einer Premier-League-Saison?", answers: ["Kevin De Bruyne & Thierry Henry", "Ryan Giggs", "Frank Lampard", "David Beckham"], correct: 0 },
+    { question: "Welcher Spieler spielte für Manchester United, Real Madrid, LA Galaxy, PSG und AC Mailand?", answers: ["David Beckham", "Cristiano Ronaldo", "Zlatan Ibrahimović", "Ronaldinho"], correct: 0 },
+    { question: "Welcher deutsche Spieler spielte über 100 Länderspiele – ohne jemals ausgewechselt zu werden?", answers: ["Sepp Maier", "Franz Beckenbauer", "Philipp Lahm", "Lothar Matthäus"], correct: 0 },
+    { question: "Wer erzielte die meisten Tore in einer einzigen Bundesliga-Saison?", answers: ["Robert Lewandowski", "Gerd Müller", "Pierre-Emerick Aubameyang", "Timo Werner"], correct: 0 },
+    { question: "Wer erzielte ein legendäres Solo-Tor für Tottenham gegen Burnley, das als „Maradona-Gedächtnistor“ gefeiert wurde?", answers: ["Heung-min Son", "Harry Kane", "Gareth Bale", "Dele Alli"], correct: 0 },
+    { question: "Wer war der erste deutsche Spieler mit über 100 Champions-League-Einsätzen?", answers: ["Philipp Lahm", "Manuel Neuer", "Thomas Müller", "Bastian Schweinsteiger"], correct: 0 },
+    { question: "Wer ist der einzige Spieler mit über 200 Länderspielen?", answers: ["Cristiano Ronaldo", "Lionel Messi", "Sergio Ramos", "Gianluigi Buffon"], correct: 0 },
+    { question: "Wer erzielte 1999 im Champions-League-Finale zwei Tore in der Nachspielzeit?", answers: ["Teddy Sheringham & Ole Gunnar Solskjær", "David Beckham & Ryan Giggs", "Paul Scholes & Roy Keane", "Andy Cole & Dwight Yorke"], correct: 0 },
+    { question: "Welcher Argentinier wurde sowohl als Spieler als auch als Trainer Weltmeister?", answers: ["Lionel Scaloni (Trainer, nicht als Spieler)", "Diego Maradona", "Lionel Messi", "César Luis Menotti"], correct: 0 },
+    { question: "Wer wurde 2013 und 2014 FIFA-Welttrainer des Jahres?", answers: ["Jupp Heynckes (2013), Joachim Löw (2014)", "Pep Guardiola", "José Mourinho", "Carlo Ancelotti"], correct: 0 },
+    { question: "Welcher Spieler wurde bekannt dafür, dass er in einem Spiel 3 Eigentore schoss?", answers: ["Stan Van den Buys", "Sergio Ramos", "Pepe", "Gerard Piqué"], correct: 0 },
+    { question: "Welcher Spieler erzielte das Golden Goal im EM-Finale 1996?", answers: ["Oliver Bierhoff", "Jürgen Klinsmann", "Andreas Möller", "Matthias Sammer"], correct: 0 },
+    { question: "Wer wurde als „Der Kaiser“ im Weltfußball bekannt?", answers: ["Franz Beckenbauer", "Lothar Matthäus", "Gerd Müller", "Sepp Maier"], correct: 0 },
+    { question: "Welche Spieler erzielten beim „7:1“ gegen Brasilien jeweils 2 Tore?", answers: ["Toni Kroos & André Schürrle", "Thomas Müller & Miroslav Klose", "Mesut Özil & Sami Khedira", "Philipp Lahm & Per Mertesacker"], correct: 0 },
+    { question: "Welcher englische Spieler verschoss 1996 den entscheidenden Elfmeter im EM-Halbfinale gegen Deutschland?", answers: ["Gareth Southgate", "Alan Shearer", "Paul Gascoigne", "David Beckham"], correct: 0 },
+    { question: "Wer ist der älteste Torschütze in der Bundesliga-Geschichte?", answers: ["Claudio Pizarro", "Robert Lewandowski", "Gerd Müller", "Lothar Matthäus"], correct: 0 },
+    { question: "Welche Spieler halten den Rekord für die meisten Hattricks in der Premier League?", answers: ["Sergio Agüero (12 Hattricks)", "Alan Shearer", "Thierry Henry", "Harry Kane"], correct: 0 }
+];
+    
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedQuestions = [];
+    
+        function showQuiz() {
+    // Alle Kategorien ausblenden
+    const categories = document.querySelectorAll('.category');
+    categories.forEach(category => {
+        category.style.display = 'none';
+    });
+
+    // Quiz anzeigen
+    document.getElementById("quiz").style.display = "block";
+
+    // Quiz starten
+    startQuiz();
+}
+    startQuiz();
+
+        function startQuiz() {
+            selectedQuestions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 10); // Wähle 10 zufällige Fragen
+            currentQuestion = 0;
+            score = 0;
+            loadQuestion();
+        }
+    
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const buttons = document.querySelectorAll("#quiz .buttons button");
+            const current = selectedQuestions[currentQuestion];
+    
+            questionElement.textContent = current.question;
+            buttons.forEach((button, index) => {
+                button.textContent = current.answers[index];
+            });
+    
+            document.getElementById("feedback").textContent = "";
+        }
+    
+        function checkAnswer(selected) {
+            const current = selectedQuestions[currentQuestion];
+            const feedback = document.getElementById("feedback");
+    
+            if (selected === current.correct) {
+                feedback.textContent = "Richtig!";
+                feedback.style.color = "green";
+                feedback.style.fontWeight = "bold"; 
+                feedback.style.fontSize = "20px"; 
+                score++;
+            } else {
+                feedback.textContent = "Falsch! Die richtige Antwort ist: " + current.answers[current.correct];
+                feedback.style.color = "red";
+                feedback.style.fontWeight = "bold"; // Fett
+                feedback.style.fontSize = "20px"; // Größer
+                    }
+    
+            currentQuestion++;
+            if (currentQuestion < selectedQuestions.length) {
+                setTimeout(loadQuestion, 2000); // Nächste Frage nach 2 Sekunden
+            } else {
+                setTimeout(showResult, 2000); // Zeige Auswertung nach der letzten Frage
+            }
+        }
+    
+        function showResult() {
+            document.getElementById("question").style.display = "none";
+            document.querySelector("#quiz .buttons").style.display = "none";
+            document.getElementById("feedback").style.display = "none";
+            document.getElementById("result").style.display = "block";
+    
+            const scoreElement = document.getElementById("score");
+            scoreElement.textContent = `Du hast ${score} von ${selectedQuestions.length} Fragen richtig beantwortet!`;
+        }
+    
+        function restartQuiz() {
+            document.getElementById("question").style.display = "block";
+            document.querySelector("#quiz .buttons").style.display = "block";
+            document.getElementById("feedback").style.display = "block";
+            document.getElementById("result").style.display = "none";
+    
+            startQuiz(); // Quiz neu starten mit neuen zufälligen Fragen
+        }
+    </script>
+
+    <div id="ligen" class="category">
+        <h2>Ligen</h2>
+        <div class="buttons">
+            <button onclick="showSubCategory('Premier-League')">Premier League</button>
+            <button onclick="showSubCategory('La-Liga')">La Liga</button>
+            <button onclick="showSubCategory('Bundesliga')">Bundesliga</button>
+            <button onclick="showSubCategory('Serie-A')">Serie A</button>
+            <button onclick="showSubCategory('Ligue-1')">Ligue 1</button>
+            <button onclick="showSubCategory('Schweizer-Super-League')">Schweizer Super League</button>
+        </div>
+        <div class="back-button">
+            <button onclick="goBack()">Zurück</button>
+        </div>
+
+        <div id="Premier-League" class="sub-category">
+            <h3>Premier League</h3>
+            <p>Gründung: Die Premier League wurde 1992 gegründet, um die englische First Division zu ersetzen und mehr Einnahmen durch TV-Rechte zu erzielen.</p>
+            <p>Erster Meister: Manchester United gewann die erste Premier-League-Saison 1992/93.</p>
+            <p>Meiste Titel: Manchester United ist Rekordmeister der Premier League mit 13 Titeln.</p>
+            <p>Meiste Punkte in einer Saison: Manchester City sammelte in der Saison 2017/18 100 Punkte, was als „Centurion Season“ bekannt wurde.</p>
+            <p>Höchster Sieg: Leicester City besiegte Southampton 2019 mit 9:0, der höchste Auswärtssieg in der Geschichte der Premier League.</p>
+            <p>Ältester Torschütze: Teddy Sheringham traf im Alter von 40 Jahren und 268 Tagen für West Ham United.</p>
+            <p>Meiste Tore: Alan Shearer hält mit 260 Toren den Rekord für die meisten Treffer in der Premier League.</p>
+            <p>Meiste Vorlagen: Ryan Giggs von Manchester United ist mit 162 Assists Rekordhalter.</p>
+            <p>Meiste Einsätze: Gareth Barry bestritt 653 Spiele, mehr als jeder andere Spieler.</p>
+            <p>Transfersummen: Der teuerste Transfer innerhalb der Premier League war Jack Grealish, der 2021 für 117,5 Millionen Euro von Aston Villa zu Manchester City wechselte.</p>
+            <p>Globaler Zuschauerrekord: Die Premier League wird in über 190 Ländern übertragen und hat eine geschätzte weltweite Zuschauerschaft von über 3 Milliarden Menschen pro Saison.</p>
+            <p>Vielfalt der Spieler: Spieler aus mehr als 100 verschiedenen Ländern haben in der Liga gespielt, was sie zur internationalsten Fußballliga macht.</p>
+            <p>Unbesiegte Saison: Arsenal schaffte es in der Saison 2003/04, als "The Invincibles" ungeschlagen die Meisterschaft zu gewinnen.</p>
+            <p>Kleinstes Stadion: Bournemouths Stadion, das Vitality Stadium, hat mit knapp über 11.000 Plätzen die geringste Kapazität in der Premier League.</p>
+        </div>
+
+        <div id="La-Liga" class="sub-category">
+            <h3>La Liga</h3>
+            <p>Gründung: La Liga wurde 1929 gegründet und ist damit eine der ältesten professionellen Fußballligen in Europa.</p>
+            <p>Erster Meister: Der FC Barcelona gewann die erste La-Liga-Saison 1929.</p>
+            <p>Meister Titel: Real Madrid ist Rekordmeister mit 35 Titeln (Stand: 2023).</p>
+            <p>Meiste Punkte in einer Saison: Real Madrid (2011/12) und FC Barcelona (2012/13) erreichten jeweils 100 Punkte.</p>
+            <p>Höchster Sieg: Athletic Bilbao schlägt den FC Barcelona 1931 mit 12:1, dem höchsten Sieg in der Geschichte der Liga.</p>
+            <p>Ältester Torschütze: Der älteste Torschütze ist Donato, der 2003 im Alter von 40 Jahren und 138 Tagen traf.</p>
+            <p>Meiste Tore: Lionel Messi hält mit 474 Toren den Rekord für die meisten Treffer in der La Liga.</p>
+            <p>Meiste Assists: Auch Lionel Messi führt mit 192 Assists diese Kategorie an.</p>
+            <p>Meiste Einsätze: Andoni Zubizarreta bestritt mit 622 Spielen die meisten Partien in La Liga.</p>
+            <p>Wertvollste Vereine: Real Madrid und der FC Barcelona gehören zu den reichsten und wertvollsten Fußballclubs der Welt.</p>
+            <p>Teuerster Transfer: Philippe Coutinho wechselte 2018 für 135 Millionen Euro vom FC Liverpool zum FC Barcelona.</p>
+            <p>Rivalitäten: Der „El Clásico“ zwischen Real Madrid und dem FC Barcelona ist eines der größten und meistgesehenen Derbys im Fußball.</p>
+        </div>
+
+        <div id="Bundesliga" class="sub-category">
+            <h3>Bundesliga</h3>
+            <p>Gründung: Die Bundesliga wurde 1963 gegründet, um einen einheitlichen Profifußball in Deutschland zu etablieren.</p>
+            <p>Erster Meister: Der 1. FC Köln wurde 1963/64 erster Bundesliga-Meister.</p>
+            <p>Rekordmeister: Der FC Bayern München hat mit 33 Titeln die meisten Meisterschaften gewonnen (Stand: 2023).</p>
+            <p>Meiste Punkte in einer Saison: Der FC Bayern München erreichte 91 Punkte in der Saison 2012/13.</p>
+            <p>Höchster Sieg: Borussia Mönchengladbach besiegte Borussia Dortmund 1978 mit 12:0.</p>
+            <p>Längste Siegesserie: Der FC Bayern gewann in der Saison 2013/14 19 Spiele in Folge.</p>
+            <p>Meiste Tore: Gerd Müller hält mit 365 Toren den Rekord.</p>
+            <p>Meiste Vorlagen: Thomas Müller führt die Liga mit über 160 Assists an.</p>
+            <p>Meiste Einsätze: Karl-Heinz Körbel absolvierte 602 Spiele – allesamt für Eintracht Frankfurt.</p>
+            <p>TV-Einnahmen: Die Bundesliga generiert über 1,3 Milliarden Euro pro Jahr aus TV-Rechten.</p>
+            <p>Teuerster Transfer: Ousmane Dembélé wechselte 2017 für 140 Millionen Euro von Borussia Dortmund zum FC Barcelona.</p>
+            <p>Torrekord in einem Spiel: Bayern München besiegte Borussia Dortmund 1971 mit 11:1 – die meisten Tore in einem Spiel.</p>
+            <p>Schnellster Hattrick: Robert Lewandowski erzielte 2015 gegen den VfL Wolfsburg 3 Tore in 4 Minuten (und insgesamt 5 in 9 Minuten).</p>
+            <p>Jüngster Spieler: Youssoufa Moukoko debütierte 2020 im Alter von 16 Jahren und 1 Tag für Borussia Dortmund.</p>
+            <p>Erfolgreichster Trainer: Udo Lattek gewann 8 Bundesliga-Titel.</p>
+            <p>Innovationen: Jürgen Klopp brachte das Gegenpressing in den deutschen Fußball, Pep Guardiola revolutionierte den Ballbesitz.</p>
+            <p>Jüngster Torschütze: Florian Wirtz traf 2020 für Bayer Leverkusen im Alter von 17 Jahren und 34 Tagen.</p>
+            <p>Höchste Zuschauerzahlen: Die Bundesliga hat die höchsten durchschnittlichen Zuschauerzahlen in Europa, mit über 43.000 Fans pro Spiel.</p>            
+        </div>
+
+        <div id="Serie-A" class="sub-category">
+            <h3>Serie A</h3>
+            <p>Gründung: Die Serie A wurde 1929 als nationale Liga gegründet, um den italienischen Fußball zu vereinheitlichen.</p>
+            <p>Erster Meister: Ambrosiana-Inter (heute Inter Mailand) gewann die erste Meisterschaft der Serie A in der Saison 1929/30.</p>
+            <p>Rekordmeister: Juventus Turin ist mit 36 Meistertiteln der Rekordhalter (Stand: 2023).</p>
+            <p>Meiste Punkte in einer Saison: Juventus Turin erreichte in der Saison 2013/14 unglaubliche 102 Punkte, ein bis heute ungebrochener Rekord.</p>
+            <p>Höchster Sieg: Torino FC besiegte Alessandria 1948 mit 10:0 – der höchste Sieg in der Geschichte der Serie A.</p>
+            <p>Längste Siegesserie: Inter Mailand gewann in der Saison 2006/07 17 Spiele in Folge.</p>
+            <p>Meiste Tore: Silvio Piola hält mit 274 Toren den Rekord für die meisten Treffer in der Serie A.</p>
+            <p>Meiste Einsätze: Gianluigi Buffon absolvierte 657 Spiele, mehr als jeder andere Spieler.</p>
+            <p>Rekordtorschütze einer Saison: Gonzalo Higuaín traf in der Saison 2015/16 36 Mal für Napoli.</p>
+            <p>Teuerster Transfer: Cristiano Ronaldo wechselte 2018 für 117 Millionen Euro von Real Madrid zu Juventus.</p>
+            <p>Europäische Erfolge: Italienische Vereine haben 12 Mal die Champions League gewonnen, davon 7 Mal durch den AC Mailand.</p>
+            <p>Unbesiegte Saison: Der AC Mailand blieb in der Saison 1991/92 ungeschlagen und wurde als „Gli Invincibili“ bekannt.</p>
+            <p>Torreichste Spiele: Inter Mailand besiegte den SSC Neapel 1949 mit 9:4 – eines der torreichsten Spiele der Serie A.</p>
+            <p>Alter Meister: Zlatan Ibrahimović gewann 2022 mit 40 Jahren den Titel mit dem AC Mailand.</p>
+            <p>Erfolgreichster Trainer: Giovanni Trapattoni gewann 7 Meistertitel mit Juventus.</p>
+            <p>Jüngster Spieler: Pietro Pellegri debütierte 2016 im Alter von 15 Jahren für den FC Genua.</p>
+        </div>
+
+        <div id="Ligue-1" class="sub-category">
+            <h3>Ligue 1</h3>
+            <p>Gründung: Die Ligue 1 wurde 1932 gegründet und war zunächst unter dem Namen „Division Nationale“ bekannt.</p>
+            <p>Erster Meister: Olympique Lillois gewann die erste Meisterschaft in der Saison 1932/33.</p>
+            <p>Rekordmeister: AS Saint-Étienne ist mit 10 Titeln Rekordmeister (Stand: 2023). Paris Saint-Germain liegt mit 11 Titeln dahinter knapp.</p>
+            <p>Meiste Punkte in einer Saison: Paris Saint-Germain sammelte 96 Punkte in der Saison 2015/16.</p>
+            <p>Höchster Sieg: Paris FC besiegte US Valenciennes-Anzin 1971 mit 12:1 – der höchste Sieg in der Geschichte der Ligue 1.</p>
+            <p>Längste Siegesserie: AS Monaco gewann in der Saison 2016/17 16 Spiele in Folge.</p>
+            <p>Meiste Tore: Delio Onnis ist mit 299 Toren der erfolgreichste Torschütze in der Geschichte der Ligue 1.</p>
+            <p>Meiste Einsätze: Mickaël Landreau bestritt 618 Spiele in der Ligue 1.</p>
+            <p>Rekordtorschütze einer Saison: Josip Skoblar erzielte in der Saison 1970/71 44 Tore für Olympique Marseille, einen bis heute ungebrochenen Rekord.</p>
+            <p>Wertvollste Vereine: Paris Saint-Germain dominiert finanziell und ist einer der reichsten Clubs der Welt.</p>
+            <p>Teuerster Transfer: Neymar wechselte 2017 für 222 Millionen Euro von Barcelona zu Paris Saint-Germain – der teuerste Transfer aller Zeiten.</p>
+            <p>Globale Zuschauerzahlen: Die Ligue 1 wird in über 150 Ländern übertragen und zieht dank Stars wie Neymar, Kylian Mbappé und Lionel Messi weltweite Aufmerksamkeit auf sich.</p>
+            <p>Weltstars: Spieler wie Zinedine Zidane, Thierry Henry und Didier Drogba haben die Liga geprägt.</p>
+            <p>Rivalitäten: Das „Le Classique“ zwischen Paris Saint-Germain und Olympique Marseille ist das größte Derby der Ligue 1.</p>
+            <p>Europäische Erfolge: Olympique Marseille ist der einzige französische Verein, der die Champions League gewann (1993).</p>
+            <p>Jüngster Spieler: Kalman Gerencser debütierte 1960 im Alter von 15 Jahren für RC Paris.</p>
+            <p>Unbesiegte Saison: Der FC Nantes blieb 1994/95 während einer gesamten Saison ungeschlagen.</p>
+            <p>Ältester Spieler: Benjamin Nivet spielte 2019 mit 42 Jahren für ES Troyes in der Ligue 1.</p>
+            <p>Erfolgreichster Trainer: Albert Batteux gewann 8 Meistertitel, davon 5 mit Stade de Reims und 3 mit Saint-Étienne.</p>
+        </div>
+
+        <div id="Schweizer-Super-League" class="sub-category">
+            <h3>Schweizer Super League</h3>
+            <p>Gründung: Die Schweizer Super League wurde 1897 gegründet, was sie zu einem der ältesten Fußballligen der Welt macht.</p>
+            <p>Erster Meister: Der Grasshopper Club Zürich wurde 1898 erster Schweizer Meister.</p>
+            <p>Rekordmeister: Der Grasshopper Club Zürich ist mit 27 Meistertiteln Rekordhalter (Stand: 2023).</p>
+            <p>Meiste Punkte in einer Saison: Der FC Basel erreichte in der Saison 2003/04 85 Punkte (damals in einem 36-Spiele-System).</p>
+            <p>Höchster Sieg: Der Grasshopper Club Zürich besiegte den FC Lugano 1928 mit 10:0.</p>
+            <p>Längste Siegesserie: Der FC Basel gewann in der Saison 2003/04 13 Spiele in Folge.</p>
+            <p>Meiste Tore: Alfred Bickel (Grasshopper Club Zürich) erzielte über 200 Tore in der Liga.</p>
+            <p>Meiste Einsätze: Heinz Hermann bestritt 562 Spiele in der höchsten Schweizer Liga.</p>
+            <p>Rekordtorschütze einer Saison: Seydou Doumbia traf in der Saison 2009/10 30-mal für die BSC Young Boys.</p>
+            <p>TV-Einnahmen: Die Liga erzielt jährlich rund 50 Millionen CHF aus TV-Rechten.</p>
+            <p>Teuerster Transfer: Breel Embolo wechselte 2016 für 26,5 Millionen Euro vom FC Basel zum FC Schalke 04.</p>
+            <p>Bekannte Spieler: Stars wie Mohamed Salah (ehemals FC Basel), Xherdan Shaqiri und Granit Xhaka begannen ihre Karrieren in der Schweiz.</p>
+        </div>
+    </div>
+
+    <div id="rekorde" class="category">
+        <h2>Rekorde</h2>
+        <div class="buttons">
+            <button onclick="showSubCategory('Allgemeine-Rekorde')">Allgemeine Rekorde</button>
+            <button onclick="showSubCategory('Spielerbezogene-Rekorde')">Spielerbezogene Rekorde</button>
+            <button onclick="showSubCategory('Vereinsbezogene-Rekorde')">Vereinsbezogene Rekorde</button>
+            <button onclick="showSubCategory('Finanzen-Rekorde')">Finanzen & Transfers</button>
+            <button onclick="showSubCategory('Laenderspiel-Rekorde')">Länderspiel-Rekorde</button>
+            <button onclick="showSubCategory('Torwart-Rekorde')">Torwart-Rekorde</button>
+        </div>
+        <div class="back-button">
+            <button onclick="goBack()">Zurück</button>
+        </div>
+
+        <div id="Allgemeine-Rekorde" class="sub-category">
+            <h3>Allgemeine Rekorde</h3>
+            <p>Meiste Tore in einem Spiel (Verein & Nationalmannschaft): Archie Thompson (Australien) erzielte 13 Tore gegen Amerikanisch-Samoa (2001).</p>
+            <p>Schnellstes Tor in der Fußballgeschichte: Nawaf Al-Abed traf nach 2,4 Sekunden für Al-Hilal (2009).</p>
+            <p>Längste ungeschlagene Serie eines Vereins: ASEC Mimosas (Elfenbeinküste) blieb von 1989 bis 1994 in 108 Spielen ungeschlagen.</p>
+            <p>Längste Siegesserie in einer Liga: Bayern München gewann 19 Spiele in Folge in der Bundesliga (2013/14).</p>
+            <p>Höchster Sieg in einem offiziellen Spiel: AS Adema besiegte SO l'Emyrne 149:0 (2002, Madagaskar).</p>
+        </div>
+
+        <div id="Spielerbezogene-Rekorde" class="sub-category">
+            <h3>Spielerbezogene Rekorde</h3>
+            <p>Meiste Tore in einer Karriere: Pelé erzielte offiziell 1.283 Tore in 1.363 Spielen.</p>
+            <p>Meiste Tore in einem Kalenderjahr: Lionel Messi erzielte im Jahr 2012 91 Tore.</p>
+            <p>Ältester Torschütze in einem Länderspiel: Kazuyoshi Miura traf mit 50 Jahren für Japan.</p>
+            <p>Jüngster Spieler in einer WM-Endrunde: Norman Whiteside (Nordirland) war 17 Jahre und 41 Tage alt (1982).</p>
+        </div>
+
+        <div id="Vereinsbezogene-Rekorde" class="sub-category">
+            <h3>Vereinsbezogene Rekorde</h3>
+            <p>Meiste Champions-League-Titel: Real Madrid mit 14 Titeln (Stand 2024).</p>
+            <p>Meiste ununterbrochene Meisterschaften: Skonto Riga gewann 14-mal in der Folge der lettischen Liga (1991–2004).</p>
+            <p>Höchste Zuschauerzahl in einem Spiel: 199.854 Zuschauer im Maracanã-Stadion beim WM-Finale 1950 (Brasilien vs. Uruguay).</p>
+        </div>
+
+        <div id="Finanzen-Rekorde" class="sub-category">
+            <h3>Finanzen & Transfers</h3>
+            <p>Teuerster Transfer aller Zeiten: Neymar für 222 Millionen Euro von Barcelona zu PSG (2017).</p>
+            <p>Teuerster Teenager-Transfer: Jude Bellingham zu Real Madrid für über 100 Mio. € (2023).</p>
+            <p>Höchster Gehalt eines Fußballers: Lionel Messi verdiente bei PSG ca. 75 Mio. € pro Jahr.</p>
+        </div>
+
+        <div id="Laenderspiel-Rekorde" class="sub-category">
+            <h3>Länderspiel-Rekorde</h3>
+            <p>Meiste Länderspiele eines Spielers: Cristiano Ronaldo (Portugal) mit über 200 Einsätzen.</p>
+            <p>Meiste Länderspieltore: Cristiano Ronaldo mit über 130 Toren für Portugal.</p>
+            <p>Meiste WM-Titel (Team): Brasilien mit 5 Weltmeisterschaften.</p>
+            <p>Höchster Sieg in einem Länderspiel: Australien 31:0 Amerikanisch-Samoa (2001).</p>
+        </div>
+
+        <div id="Torwart-Rekorde" class="sub-category">
+            <h3>Torwart-Rekorde</h3>
+            <p>Meiste gehaltene Elfmeter in einer WM: Manuel Neuer & Sergio Goycochea (4 gehaltene Elfmeter in einem Turnier).</p>
+            <p>Meiste zu-null-Spiele in einer Karriere: Gianluigi Buffon (über 420 Spiele ohne Gegentor).</p>
+            <p>Meiste Tore durch einen Torwart: Rogério Ceni (131 Tore, hauptsächlich durch Freistöße und Elfmeter).</p>
+        </div>
+    </div>
+
+    <div id="spezielles" class="category">
+        <h2>Spezielles</h2>
+        <div class="buttons">
+            <!-- Entferne den Button für "Besondere Momente", falls vorhanden -->
+        </div>
+        <div class="content">
+            <p>Torwart trifft per Abschlag – Tim Howard (Everton), 2012, Tor aus 90 Metern.</p>
+            <p>Afrika-Cup 2010 – Togo zieht sich zurück nach bewaffnetem Angriff aufs Team.</p>
+            <p>Kroatien bei WM 2018 – jedes K.o.-Spiel ging in die Verlängerung oder Elfmeterschießen.</p>
+            <p>Stadion verbrennt Trikots – Flamengo-Fans verbrannten Ronaldinhos Trikots nach Vereinswechsel.</p>
+            <p>Griechenland wird Europameister – 2004, defensivstark, von niemandem erwartet.</p>
+            <p>Italienische WM 1982 – Paolo Rossi erst gesperrt, dann Torschützenkönig und Weltmeister.</p>
+            <p>Tor ohne Ballberührung – Spielabbruch bei Anstoß: Gegner protestiert, Team läuft alleine durch und trifft.</p>
+            <p>„Panenka“-Elfmeter – legendärer Lupfer 1976, seither eigene Bezeichnung für solche Schüsse.</p>
+            <p>Erster WM-Sieger – Uruguay 1930, als Gastgeber.</p>
+            <p>Oliver Kahn – „Titan“ – einziger Spieler, der als Torwart zum besten Spieler einer WM gewählt wurde (2002).</p>
+            <p>„Clasico“-Rekord: Messi – meistgespielte El Clásico-Partien und Topscorer.</p>
+            <p>Algeriens „Schande von Gijón“ – 1982, Deutschland und Österreich spielen gezielt 1:0, um beide weiterzubringen.</p>
+            <p>Japan räumt Stadion auf – Fans sammeln nach WM-Spielen immer den Müll – weltweite Anerkennung.</p>
+            <p>Regenbogenbinde-Debatte – EM 2021, politische Diskussion um Kapitänsbinden.</p>
+            <p>Rekord-WM-Tor: Miroslav Klose – 16 WM-Tore, Rekordhalter.</p>
+            <p>Sergio Ramos – meistrote Karten – Rekordhalter in La Liga.</p>
+            <p>Leicester City Meister – 2016, 5000:1 Außenseiter gewinnt Premier League.</p>
+            <p>Stadionsprecher tanzt mit Fans – Frankfurt, Pokalsieg 2018, Stimmung legendär.</p>
+            <p>Ronaldinho bejubelt – vom Gegner! – Real-Fans klatschen bei seiner Gala im Bernabéu (2005).</p>
+        </div>
+        <div class="back-button">
+            <button onclick="goBack()">Zurück</button>
+        </div>
+    </div>
+</body>
+</html>
