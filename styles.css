@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://www.lehrer-online.de/fileadmin/user_upload/Bilder_Dossiers/Bilder_Faecheruebergreifend/Bilder_Fussball_Im_Unterricht/header-fussball-im-unterricht-freepik-nuraghies.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    color: rgb(25, 24, 138); /* Setzt die Schriftfarbe */
+}
+
+.category {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+    color: rgb(0, 0, 0); /* Setzt die Schriftfarbe der Kategorien auf schwarz */
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.buttons button {
+    font-size: 18px;
+    margin: 5px;
+}
+
+.sub-category {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.category p {
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
